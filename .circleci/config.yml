@@ -6,6 +6,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          name: Restore npm cache
+          keys: [frontend-build]
       - run:
           name: build-frontend
           command: |
@@ -20,6 +23,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          name: Restore npm package cache
+          keys: [backend-build]
       - run:
           name: build-backend
           command: |
@@ -32,6 +38,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          name: Restore npm pckage cache
+          keys: [frontend-test]
       - run:
           name: test-frontend
           command: |
@@ -46,8 +55,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore npm package cache
-          keys:
-          - v1-npm-deps-
+          keys: [backend-test]
       - run:
           name: test-backend
           command: |
@@ -64,8 +72,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore npm package cache
-          keys:
-          - v1-npm-deps-
+          keys: [frontend-scan]
       - run:
           name: scan-frontend
           command: |
@@ -82,8 +89,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore npm package cache
-          keys:
-          - v1-npm-deps-
+          keys: [backend-scan]
       - run:
           name: scan-backend
           command: |
@@ -91,6 +97,22 @@ jobs:
               npm install
               npm fund
               npm audit fix --force
+
+    deploy-infrastructure:
+      docker:
+        - image: circleci/aws-cli@3.1.1
+      steps:
+        - checkout
+        - run:
+            name: Install dependencies
+            command: |
+                  cd .circleci/files
+                  aws cloudformation deploy \
+                          --template-file cloudfront.yml \
+                          --stack-name InitialStack \
+                          --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000
+
+    
               
 
 
