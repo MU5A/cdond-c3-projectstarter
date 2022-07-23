@@ -98,7 +98,7 @@ jobs:
               npm fund
               npm audit fix --force
 
-    deploy-infrastructure:
+  deploy-infrastructure:
       docker:
         - image: circleci/aws-cli@3.1.1
       steps:
