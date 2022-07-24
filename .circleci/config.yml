@@ -127,6 +127,54 @@ jobs:
                     --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
                     exit 1
 
+      - run:
+          name: Add backend ip to ansible inventory
+          working_directory: ./.circleci/ansible
+          command: |
+              aws ec2 describe-instances \
+                    --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                    --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                    --output text >> inventory.txt
+              cat inventory.txt
+              exit 1
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy_environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
+
+
+  configure-server:
+    docker:
+      - image: python:3.9.0-alpine
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["71:a6:8f:bd:22:e2:4b:d8:4f:e3:35:03:b1:ef:64:d4"]
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install dependencies
+          working_directory: ./.circleci/ansible
+          command: |
+            apk add --update ansible
+            ansible --version
+            exit 1
+      - run:
+          name: Configure server
+          working_directory: ./.circleci/ansible
+          command: |
+            pwd &&
+            ls -la
+            cat inventory
+            ansible-playbook -i inventory configure-server.yml
+            exit 1
+      - destroy_environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail  
+
 
 workflows:
   default:
@@ -143,4 +191,6 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - configure-server:
+          requires: [deploy-infrastructure]
     
