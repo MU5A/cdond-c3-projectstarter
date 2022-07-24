@@ -101,7 +101,7 @@ jobs:
 
   deploy-infrastructure:
       docker:
-        - image: circleci/aws-cli
+        - image: amazon/aws-cli
       steps:
         - checkout
         - run:
@@ -111,7 +111,8 @@ jobs:
                   aws cloudformation deploy \
                           --template-file cloudfront.yml \
                           --stack-name InitialStack \
-                          --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000
+                          --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000 \
+                          --region us-east-1
 
     
               
