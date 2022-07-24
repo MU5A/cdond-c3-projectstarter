@@ -106,6 +106,8 @@ jobs:
         - checkout
         - run:
             name: Install dependencies
+            command: yum install -y tar gzip
+        - run:
             command: |
                   cd .circleci/files
                   aws cloudformation deploy \
@@ -113,6 +115,40 @@ jobs:
                           --stack-name InitialStack \
                           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000 \
                           --region us-east-1
+
+        - run:
+            name: Install backend dependencies
+            command: |
+                aws cloudformation deploy \
+                        --template-file .circleci/files/backend.yml \
+                        --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                        --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+                        --tags project=udapeople
+        - run:
+            name: Deploy frontend infrastructure
+            working_directory: ./.circleci/files
+            command: |
+                aws cloudformation deploy \
+                        --template-file frontend.yaml \
+                        --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                        --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+                        --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+        - run:
+          name: Add backend ip to ansible inventory
+          working_directory: ./.circleci/ansible
+          command: |
+              aws ec2 describe-instances \
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                  --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --output text >> inventory
+              cat inventory
+        - persist_to_workspace:
+          root: .
+          paths:
+            - .circleci/ansible/inventory
+        - destroy_environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
     
               
