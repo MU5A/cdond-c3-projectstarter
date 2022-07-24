@@ -108,13 +108,6 @@ jobs:
           name: Install dependencies
           command: yum install -y tar gzip
       - run:
-          command: |
-                aws cloudformation deploy \
-                        --template-file .circleci/files/cloudfront.yml \
-                        --stack-name InitialStack \
-                        --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000 
-                        exit 1
-      - run:
           name: ensure backend infrastructure exists
           command: |
               aws cloudformation deploy \
