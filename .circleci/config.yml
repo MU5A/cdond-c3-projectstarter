@@ -99,7 +99,7 @@ jobs:
               npm fund
               npm audit fix --force
 
-  deploy-infrastructure:
+  deploy-infra:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -149,7 +149,7 @@ jobs:
           when: on_fail
 
 
-  configure-infrastructure:
+  config-infra:
     docker:
       - image: python:3.9.0-alpine
     steps:
@@ -190,9 +190,7 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infrastructure:
+      - deploy-infra:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - configure-infrastructure
+      - config-infra:
+          requires: [deploy-infra]
