@@ -115,7 +115,6 @@ jobs:
                       --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                       --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
                       --tags project=udapeople
-                      exit 1
       - run:
           name: Ensure frontend infrastructure exists 
           working_directory: ./.circleci/files
@@ -125,7 +124,6 @@ jobs:
                     --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                     --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
                     --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-                    exit 1
 
       - run:
           name: Add backend ip to ansible inventory
@@ -136,7 +134,6 @@ jobs:
                     --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                     --output text >> inventory.txt
               cat inventory.txt
-              exit 1
       - persist_to_workspace:
           root: ~/
           paths:
@@ -157,7 +154,6 @@ jobs:
           command: |
             apk add --update ansible
             ansible --version
-            exit 1
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
@@ -166,7 +162,6 @@ jobs:
             ls -la
             cat inventory
             ansible-playbook -i inventory configure-server.yml
-            exit 1
   
 
 workflows:
