@@ -99,7 +99,7 @@ jobs:
               npm fund
               npm audit fix --force
 
-  deploy-infra:
+  deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -109,9 +109,8 @@ jobs:
           command: yum install -y tar gzip
       - run:
           command: |
-                cd .circleci/files
                 aws cloudformation deploy \
-                        --template-file cloudfront.yml \
+                        --template-file .circleci/files/cloudfront.yml \
                         --stack-name InitialStack \
                         --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz0000 
                         exit 1
@@ -125,7 +124,7 @@ jobs:
                       --tags project=udapeople
                       exit 1
       - run:
-          name: Deploy frontend infrastructure
+          name: Ensure frontend infrastructure exists 
           working_directory: ./.circleci/files
           command: |
               aws cloudformation deploy \
@@ -149,6 +148,6 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infra:
+      - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
     
