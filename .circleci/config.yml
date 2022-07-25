@@ -182,9 +182,7 @@ jobs:
           working_directory: ./backend
           command: |
               npm install
-              npm fund
-              npm audit 
-              npm run build
+              npm audit fix
               npm run migrations > migrations_dump.txt
       - run: 
           name: Send Migration results to kvdb
