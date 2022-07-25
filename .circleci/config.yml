@@ -170,7 +170,6 @@ jobs:
       - checkout
       - run:
           name: Install AWS CLI dependencies
-          working_directory: /tmp
           command: |
               sudo apt-get update 
               sudo apt-get upgrade -y
@@ -179,22 +178,19 @@ jobs:
               sudo ./aws/install
       - run:
           name: Run migrations
-          working_directory: ./backend
           command: |
-              npm install
-              npm run migrations > migrations_dump.txt
+              ls -a
+              cd backend
+              npm i
+              npm run migrations > migrations.txt
       - run: 
           name: Send Migration results to kvdb
-          working_directory: ./backend
           command: |
-              if grep -q "has been executed successfully" migrations_dump.txt
+              cat ~/project/backend/migrations.txt
+              if grep -q "has been executed successfully" ~/project/backend/migrations.txt
               then
                 echo "DB migration was successful, will update kvdb..."
-                curl https://kvdb.io/LwfjS5JcxvnfaZhWDgyGw8/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-
-              else
-                curl -H "DB migration failed, please verify setup! Probably the database already exists. Verify setup!"
-                curl -H "Content-Type: text/plain" -H "token: LwfjS5JcxvnfaZhWDgyGw8" --request PUT --data "failure" https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+                curl "https://kvdb.io/LwfjS5JcxvnfaZhWDgyGw8/migration_${CIRCLE_WORKFLOW_ID:0:7}"  -d '1'
               fi 
               echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
 
