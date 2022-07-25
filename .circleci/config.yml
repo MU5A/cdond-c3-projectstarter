@@ -179,7 +179,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
-              ls -a
+              ls -al
               cd backend
               npm i
               npm run migrations > migrations.txt
