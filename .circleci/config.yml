@@ -16,6 +16,9 @@ jobs:
             cd frontend
             npm install
             npm run build 
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
 
 
@@ -33,6 +36,9 @@ jobs:
             cd backend
             npm install
             npm run build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
   test-frontend:
     docker:
@@ -40,8 +46,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          name: Restore npm pckage cache
-          keys: [frontend-test]
+          name: Restore cache
+          keys: [frontend-build]
       - run:
           name: test-frontend
           command: |
@@ -56,7 +62,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore npm package cache
-          keys: [backend-test]
+          keys: [backend-build]
       - run:
           name: test-backend
           command: |
@@ -72,8 +78,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          name: Restore npm package cache
-          keys: [frontend-scan]
+          name: Restore cache
+          keys: [frontend-build]
       - run:
           name: scan-frontend
           command: |
@@ -89,8 +95,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          name: Restore npm package cache
-          keys: [backend-scan]
+          name: Restore cache
+          keys: [backend-build]
       - run:
           name: scan-backend
           command: |
@@ -168,8 +174,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [build-backend]
       - run:
           name: Install AWS CLI dependencies
           command: |
