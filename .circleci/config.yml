@@ -253,5 +253,5 @@ workflows:
       - run-migrations:
           requires: [configure-server]
       - deploy-frontend:
-          requires: [run-mgrations]
+          requires: [run-migrations]
     
