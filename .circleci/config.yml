@@ -251,17 +251,24 @@ jobs:
       - run: 
           name: Deploy backend
           command: |
-              cd backend
-              npm install
+             cd backend
+              npm i
               npm run build
               cd ..
+              # Zip the directory
               tar -C backend -czvf artifact.tar.gz .
               mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-              mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+              # mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+              cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            
+              export TYPEORM_MIGRATIONS_DIR=./migrations
+              export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+              export TYPEORM_MIGRATIONS=./migrations/*.ts
               cd .circleci/ansible
-              echo "Contents of the inventory.txt file is ...."
+              echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
-              ansible-playbook -i inventory.txt deploy-backend.yml
+              export ANSIBLE_HOST_KEY_CHECKING=False
+              ansible-playbook -i inventory.txt deploy-backend.yml -v
 
 workflows:
   default:
