@@ -287,7 +287,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: 
-          name: Install dependencies
+          name: Install dependenciess.
           command: |
                 apk add --update --no-cache tar gzip rsync nodejs npm  ansible curl openssh
                 pip install awscli
