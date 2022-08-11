@@ -220,6 +220,8 @@ jobs:
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
               unzip awscliv2.zip
               sudo ./aws/install
+      - attach_workspace:
+          at: ~/
       - run:
           name: Run migrations
           command: |
@@ -253,6 +255,8 @@ jobs:
           command: |
               apk add --update ansible tar curl nodejs npm
               pip install awscli
+      - attach_workspace:
+          at: ~/
       - run: 
           name: Get backend url
           command: |     
@@ -282,13 +286,13 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["ff:36:ea:ad:ae:f0:27:84:c1:45:fb:f6:bb:6d:3e:e9"]  
-      - attach_workspace:
-          at: ~/
       - run: 
           name: Install dependenciess.
           command: |
                 apk add --update --no-cache tar gzip rsync nodejs npm  ansible curl openssh
                 pip install awscli
+      - attach_workspace:
+          at: ~/
       - run: 
           name: Deploy backend
           command: |
@@ -320,6 +324,8 @@ jobs:
             apk add --update ansible
             pip install awscli
             apk add --update --no-cache tar gzip nodejs npm curl
+      - attach_workspace:
+          at: ~/
       - run:
           name: Backend smoke test.
           command: |
