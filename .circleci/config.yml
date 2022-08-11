@@ -38,165 +38,165 @@ commands:
 
 
 jobs:
-  # build-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore npm cache
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: build-frontend
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run build 
-  #     - save_cache:
-  #         paths: [frontend/node_modules]
-  #         key: frontend-build
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore npm cache
+          keys: [frontend-build]
+      - run:
+          name: build-frontend
+          command: |
+            cd frontend
+            npm install
+            npm run build 
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
 
 
-  # build-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore npm package cache
-  #         keys: [backend-build]
-  #     - run:
-  #         name: build-backend
-  #         command: |
-  #           cd backend
-  #           npm install
-  #           npm run build
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore npm package cache
+          keys: [backend-build]
+      - run:
+          name: build-backend
+          command: |
+            cd backend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
-  # test-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore cache
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: test-frontend
-  #         command: |
-  #             cd frontend
-  #             npm install
-  #             npm run test
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore cache
+          keys: [frontend-build]
+      - run:
+          name: test-frontend
+          command: |
+              cd frontend
+              npm install
+              npm run test
 
-  # test-backend:
-  #   docker: 
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore npm package cache
-  #         keys: [backend-build]
-  #     - run:
-  #         name: test-backend
-  #         command: |
-  #             cd backend
-  #             npm install
-  #             npm run test
+  test-backend:
+    docker: 
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore npm package cache
+          keys: [backend-build]
+      - run:
+          name: test-backend
+          command: |
+              cd backend
+              npm install
+              npm run test
       
 
 
-  # scan-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore cache
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: scan-frontend
-  #         command: |
-  #             cd frontend
-  #             npm install
-  #             npm audit fix --force
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore cache
+          keys: [frontend-build]
+      - run:
+          name: scan-frontend
+          command: |
+              cd frontend
+              npm install
+              npm audit fix --force
 
 
 
-  # scan-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore cache
-  #         keys: [backend-build]
-  #     - run:
-  #         name: scan-backend
-  #         command: |
-  #             cd backend
-  #             npm install
-  #             npm fund
-  #             npm audit fix --force
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore cache
+          keys: [backend-build]
+      - run:
+          name: scan-backend
+          command: |
+              cd backend
+              npm install
+              npm fund
+              npm audit fix --force
 
-  # deploy-infrastructure:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install dependencies
-  #         command: yum install -y tar gzip
-  #     - run:
-  #         name: ensure backend infrastructure exists
-  #         command: |
-  #             aws cloudformation deploy \
-  #               --template-file .circleci/files/backend.yml \
-  #               --tags Project=udapeople \
-  #               --stack-name stack-create-server-${CIRCLE_WORKFLOW_ID:0:7} \
-  #               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-  #     - run:
-  #         name: Ensure frontend infrastructure exists 
-  #         command: |
-  #             aws cloudformation deploy \
-  #               --template-file .circleci/files/frontend.yml \
-  #               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-  #               --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yum install -y tar gzip
+      - run:
+          name: ensure backend infrastructure exists
+          command: |
+              aws cloudformation deploy \
+                --template-file .circleci/files/backend.yml \
+                --tags Project=udapeople \
+                --stack-name stack-create-server-${CIRCLE_WORKFLOW_ID:0:7} \
+                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure frontend infrastructure exists 
+          command: |
+              aws cloudformation deploy \
+                --template-file .circleci/files/frontend.yml \
+                --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+                --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
-  #     - run:
-  #         name: Add backend ip to ansible inventory
-  #         command: |
-  #           aws ec2 describe-instances \
-  #             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #             --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
-  #             --output text >> .circleci/ansible/inventory.txt
+      - run:
+          name: Add backend ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --output text >> .circleci/ansible/inventory.txt
             
-  #           cat ~/project/.circleci/ansible/inventory.txt
-  #     - persist_to_workspace:
-  #         root: ~/
-  #         paths:
-  #           - project/.circleci/ansible/inventory.txt
-  #     - destroy-environment:
-  #         workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+            cat ~/project/.circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-server:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine3.16
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["ff:36:ea:ad:ae:f0:27:84:c1:45:fb:f6:bb:6d:3e:e9"]
-      - attach_workspace:
-          at: ~/
+      
       - run:
           name: Install dependencies
           working_directory: ./.circleci/ansible
           command: |
-            apk add --update ansible
-            ansible --version
+            apk add --update --no-cache tar gzip ansible aws-cli
+      - attach_workspace:
+          at: ~/
       - run:
           name: Configure server
           command: |
@@ -352,20 +352,20 @@ jobs:
 workflows:
   default:
     jobs:
-      #  - build-frontend
-      #  - build-backend
-      #  - test-frontend:
-      #      requires: [build-frontend]
-      #  - test-backend:
-      #      requires: [build-backend]
-      #  - scan-backend:
-      #      requires: [build-backend]
-      #  - scan-frontend:
-      #      requires: [build-frontend]
-      #  - deploy-infrastructure
-          #  requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-       - configure-server
-          #  requires: [deploy-infrastructure]
+       - build-frontend
+       - build-backend
+       - test-frontend:
+           requires: [build-frontend]
+       - test-backend:
+           requires: [build-backend]
+       - scan-backend:
+           requires: [build-backend]
+       - scan-frontend:
+           requires: [build-frontend]
+       - deploy-infrastructure:
+           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+       - configure-server:
+            requires: [deploy-infrastructure]
        - run-migrations:
            requires: [configure-server]
        - deploy-frontend:
