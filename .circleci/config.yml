@@ -289,25 +289,23 @@ jobs:
       - run: 
           name: Install dependenciess.
           command: |
-                apk add --update ansible curl rsync openssh nodejs npm
+                apk add --update --no-cache tar gzip rsync nodejs npm  ansible curl openssh
                 pip install awscli
-                ansible --version
-                
       - attach_workspace:
           at: ~/
       - run: 
           name: Deploy backend
-          working_directory: ./.circleci/ansible
           command: |
-              cd backend
-              npm i
-              npm run build
-              cd ..
-              tar -C backend -czvf artifact.tar.gz .
-              cd .circleci/ansible
-              echo "Contents  of the inventory.txt file is -------"
-              cat inventory.txt
-              ansible-playbook -i inventory.txt deploy-backend.yml
+                cd ~/project/backend
+                npm install
+                npm run build
+                cd ..
+                tar -C backend -czvf artifact.tar.gz .
+                cd .circleci/ansible
+                echo "Contents  of the inventory.txt file is -------"
+                cat inventory.txt
+                ansible-playbook -i inventory.txt deploy-backend.yml
+              
       - revert_migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
