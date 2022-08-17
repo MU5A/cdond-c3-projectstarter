@@ -233,7 +233,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            cat ~/project/backend/.env
+            cat ~/project/.circeci/ansible/inventory
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
           no_output_timeout: 40m
