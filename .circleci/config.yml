@@ -279,7 +279,7 @@ jobs:
 
             cd backend
             npm install
-            npm audit fix --force
+            npm audit fix s
             npm run migrations > migrations_dump.txt
       - persist_to_workspace:
           root: ~/
