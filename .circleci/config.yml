@@ -258,29 +258,20 @@ jobs:
   run-migrations:
     docker:
       - image: cimg/node:13.8.0
-        # environment:
-        #   TYPEORM_CONNECTION: $TYPEORM_CONNECTION
-        #   TYPEORM_ENTITIES: $TYPEORM_ENTITIES
-        #   TYPEORM_HOST: $TYPEORM_HOST
-        #   TYPEORM_PORT: $TYPEORM_PORT
-        #   TYPEORM_USERNAME: $TYPEORM_USERNAME
-        #   TYPEORM_PASSWORD: $TYPEORM_PASSWORD
-        #   TYPEORM_DATABASE: $TYPEORM_DATABASE
-        #   TYPEORM_MIGRATIONS: $TYPEORM_MIGRATIONS
-        #   TYPEORM_MIGRATIONS_DIR: $TYPEORM_MIGRATIONS_DIR
     steps:
       - checkout
       - install_awscli
+      - install_nodejs
       - attach_workspace:
           at: ~/
+      - restore_cache: 
+          keys: [backend-build]
       - run:
           name: Run migrations
           command: |
-
             cd backend
             npm install
-            npm run build
-            npm audit fix --force
+            npm audit fix --audit-level=critical --force
             npm run migrations > migrations_dump.txt
       - persist_to_workspace:
           root: ~/
@@ -310,6 +301,7 @@ jobs:
             python -m pip install --user ansible
             cd frontend 
             npm install
+            echo "i think am done with the deployment"
       - run:
           name: Get backend url
           command: |
