@@ -354,9 +354,9 @@ jobs:
           name: Checking the existence of inventory.txt && artifact.tar.gz file
           command: |
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
+            echo "Contents  of the inventory.txt file is ---------"
             cat inventory.txt
-            echo "Contents of files folder is -------"
+            echo "Contents of files folder is ----------"
             ls ~/
       - run:
           name: Deploy backend
