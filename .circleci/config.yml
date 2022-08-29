@@ -260,8 +260,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --force
-            npm audit fix --audit-level=critical
             npm run migrations > migrations_dump.txt
       - persist_to_workspace:
           root: ~/
