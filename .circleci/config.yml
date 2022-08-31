@@ -23,7 +23,7 @@ commands:
             # Install Node.js LTS version as our base Node.js version
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
-            # Use n version manager to use Node.js v13.8.0
+            # Use n version manager to use Node.js v13.8.0...........dont forget
             sudo npm install --global n
             sudo n 13.8.0
   install_awscli:
@@ -389,25 +389,25 @@ jobs:
       - checkout
       - install_awscli
       - install_nodejs
-      - run:
-          name: Backend smoke test.
-          command: |
-            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            export API_URL="http://${BACKEND_PUBLIC_IP}:3030"
-            echo "${API_URL}"
-            if curl "$API_URL/api/status" | grep "ok"
-            then
-              exit 0
-            else
-              exit 1
-            fi
+      # - run:
+      #     name: Backend smoke test.
+      #     command: |
+      #       BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+      #         --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --query 'Reservations[*].Instances[*].PublicIpAddress' \
+      #         --output text)
+      #       export API_URL="http://${BACKEND_PUBLIC_IP}:3030"
+      #       echo "${API_URL}"
+      #       if curl "$API_URL/api/status" | grep "ok"
+      #       then
+      #         exit 0
+      #       else
+      #         exit 1
+      #       fi
       - run:
           name: Frontend smoke test.
           command: |
-            URL=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/#/employees
+            URL='http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/#/employees'
             echo ${URL}
             if curl -s ${URL} | grep "Welcome"
             then
