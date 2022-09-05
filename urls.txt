@@ -1,2 +1,3 @@
 https://github.com/MU5A/cdond-c3-projectstarter
-https://udapeople-2a3c35c.s3.amazonaws.com/index.html
+http://udapeople-671f0a8.s3.amazonaws.com/index.html
+http://dopd92m976zbj.cloudfront.net/#/employees
